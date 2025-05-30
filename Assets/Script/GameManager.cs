@@ -5,7 +5,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public bool hasGameFinished;
+    [HideInInspector]public bool hasGameFinished;
+
+    public float EdgeSize => cellGap + cellSize;
+
     [SerializeField] private Cell cellPrefab;
     [SerializeField] private SpriteRenderer backGroundSprite;
     [SerializeField] private SpriteRenderer highlightSprite;
@@ -68,7 +71,7 @@ public class GameManager : MonoBehaviour
             {
                 Vector3 spawnPos = startPos + j * rightOffset + i * topOffset;
                 Cell tempCell = Instantiate(cellPrefab, spawnPos, Quaternion.identity);
-                tempCell.Number = levelGrid[i, j];
+                tempCell.Init(i,j, levelGrid[i, j]);
                 cellGrid[i, j] = tempCell;
                 if (tempCell.Number == 0)
                 {
@@ -77,8 +80,36 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        for(int i = 0; i < levelData.row; i++)
+        {
+            for(int j = 0;j < levelData.col; j++)
+            {
+                if (cellGrid[i, j] != null)
+                {
+                    cellGrid[i, j].Init();
+                }
+            }
+        }
+
     }
 
+    public Cell GetAdjacentCell(int row, int col, int direction)
+    {
+        Vector2Int currentDirection = Directions[direction];
+        Vector2Int startPos=new Vector2Int(row, col);
+        Vector2Int checkPos = startPos + currentDirection;
+        while(isValid(checkPos) && cellGrid[checkPos.x, checkPos.y] == null)
+        {
+            checkPos += currentDirection;
+        }
+        return isValid(checkPos) ? cellGrid[checkPos.x, checkPos.y] : null;
+    }
+
+    public bool isValid(Vector2Int pos)
+    {
+        return pos.x > 0 && pos.y >= 0 && pos.x < levelData.row && pos.y < levelData.col;
+    }
 }
 
 [System.Serializable]

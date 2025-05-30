@@ -466,8 +466,8 @@ MonoBehaviour:
   highlightSize: {x: 1, y: 2}
   levelData:
     row: 2
-    col: 1
-    data: 0200000003000000
+    col: 2
+    data: 02000000030000000300000003000000
   cellGap: 2
   cellSize: 2
   levelGap: 2
