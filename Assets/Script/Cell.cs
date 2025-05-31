@@ -132,9 +132,54 @@ public class Cell : MonoBehaviour
         top2.SetActive(false);
     }
 
+    public void AddEdge(int direction)
+    {
+        if (connectedCell[direction] == null) return;
+
+        if (edgeCount[direction] == 2)
+        {
+            RemoveEdge(direction);
+            RemoveEdge(direction);
+            return;
+        }
+
+        edgeCount[direction]++;
+        Number--;
+        edge[direction][1].SetActive(false);
+        edge[direction][2].SetActive(false);
+        edge[direction][edgeCount[direction]].SetActive(true);
+    }
+
+    public void RemoveEdge(int direction)
+    {
+        if (connectedCell[direction] == null || edgeCount[direction] == 0) return;
+        edgeCount[direction]--;
+        Number++;
+        edge[direction][1].SetActive(false);
+        edge[direction][2].SetActive(false);
+        if (edgeCount[direction] != 0)
+        {
+            edge[direction][edgeCount[direction]].SetActive(true);
+        }
+        
+    }
+
+    public void RemoveAllEdge()
+    {
+        for (int i=0; i < 4; i++)
+        {
+            RemoveEdge(i);
+            RemoveEdge(i);
+        }
+    }
+
     private void ChangeSpriteSize(SpriteRenderer sprite, float size)
     {
         sprite.size = new Vector2(sprite.size.x, size);
     }
 
+    public bool isValidCell(Cell cell, int direction)
+    {
+        return connectedCell[direction] == cell;
+    }
 }

@@ -550,8 +550,8 @@ MonoBehaviour:
   down1: {fileID: 9032882536993262874}
   down2: {fileID: 5166936445918974530}
   defaultColor: {r: 1, g: 1, b: 1, a: 1}
-  solvedColor: {r: 0.4858024, g: 0.9150943, b: 0.46186364, a: 0}
-  incorrectColor: {r: 0.9811321, g: 0.32858673, b: 0.3354714, a: 0}
+  solvedColor: {r: 0.11107801, g: 0.9339623, b: 0.101326115, a: 1}
+  incorrectColor: {r: 0.9339623, g: 0.383277, b: 0.383277, a: 1}
 --- !u!61 &6994163822149435489
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -586,7 +586,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.011603355, y: 0.00773561}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -596,7 +596,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.2608838, y: 2.2686193}
   m_EdgeRadius: 0
 --- !u!1 &2239091960953894564
 GameObject:
