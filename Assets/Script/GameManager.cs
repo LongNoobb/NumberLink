@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 
     private List<Vector2Int> Directions = new List<Vector2Int>()
     {
-        Vector2Int.up, Vector2Int.down, Vector2Int.right, Vector2Int.left
+        Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
     };
 
     private void Awake()
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < levelData.col; j++)
             {
-                levelGrid[i, j] = levelData.data[i * levelData.row + j];
+                levelGrid[i, j] = levelData.data[i * levelData.col + j];
             }
         }
 
@@ -233,7 +233,7 @@ public class GameManager : MonoBehaviour
         }
         if (offsetDirection == Vector2Int.up || offsetDirection == Vector2Int.down)
         {
-            result = -Mathf.Abs(offset.y);
+            result = Mathf.Abs(offset.y);
         }
         return result;
     }

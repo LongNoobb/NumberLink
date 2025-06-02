@@ -266,7 +266,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 9b78f221b1948614fb73f84606d8d889, type: 3}
   m_Color: {r: 0.9339623, g: 0.383277, b: 0.383277, a: 1}
   m_FlipX: 0
@@ -463,11 +463,11 @@ MonoBehaviour:
   cellPrefab: {fileID: 1605233996651061531, guid: 70833b90148fe76459c91ea7a10864db, type: 3}
   backGroundSprite: {fileID: 322723065}
   highlightSprite: {fileID: 681614559}
-  highlightSize: {x: 2, y: 2}
+  highlightSize: {x: 1.5, y: 1.5}
   levelData:
-    row: 2
-    col: 2
-    data: 01000000010000000200000002000000
+    row: 1
+    col: 4
+    data: 01000000020000000200000001000000
   cellGap: 2
   cellSize: 2
   levelGap: 2
