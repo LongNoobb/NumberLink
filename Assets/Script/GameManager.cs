@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -31,21 +32,59 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        //instance = this;
+        //hasGameFinished = false;
+        //highlightSprite.gameObject.SetActive(false);
+        //levelGrid = new int[levelData.row, levelData.col];
+        //cellGrid = new Cell[levelData.row, levelData.col];
+        //for (int i = 0; i < levelData.row; i++)
+        //{
+        //    for (int j = 0; j < levelData.col; j++)
+        //    {
+        //        levelGrid[i, j] = levelData.data[i * levelData.col + j];
+        //    }
+        //}
+
+        //SpawnLevel();
         instance = this;
         hasGameFinished = false;
         highlightSprite.gameObject.SetActive(false);
+
+        GenerateLevel(3, 3, extraEdges: 2);
+
         levelGrid = new int[levelData.row, levelData.col];
         cellGrid = new Cell[levelData.row, levelData.col];
         for (int i = 0; i < levelData.row; i++)
-        {
             for (int j = 0; j < levelData.col; j++)
-            {
                 levelGrid[i, j] = levelData.data[i * levelData.col + j];
-            }
-        }
 
         SpawnLevel();
     }
+
+
+
+    //private void Awake()
+    //{
+    //    instance = this;
+    //    hasGameFinished = false;
+    //    highlightSprite.gameObject.SetActive(false);
+
+
+    //    levelData = GenerateRandomLevel(4, 4, 3); 
+
+    //    levelGrid = new int[levelData.row, levelData.col];
+    //    cellGrid = new Cell[levelData.row, levelData.col];
+
+    //    for (int i = 0; i < levelData.row; i++)
+    //    {
+    //        for (int j = 0; j < levelData.col; j++)
+    //        {
+    //            levelGrid[i, j] = levelData.data[i * levelData.col + j];
+    //        }
+    //    }
+
+    //    SpawnLevel();
+    //}
 
     private void SpawnLevel()
     {
@@ -200,6 +239,20 @@ public class GameManager : MonoBehaviour
             }
         }
         hasGameFinished = true;
+        if (hasGameFinished)
+        {
+            
+            GameObject[] game = GameObject.FindGameObjectsWithTag("Cell");
+            int count = game.Count();
+            if (count!=0)
+            {
+                foreach(GameObject g in game)
+                {
+                    Destroy(g);
+                }
+            }
+            Awake();
+        }
     }
 
     private int GetDirectionIndex(Vector2Int offsetDirection)
@@ -276,6 +329,150 @@ public class GameManager : MonoBehaviour
     {
         return pos.x >= 0 && pos.y >= 0 && pos.x < levelData.row && pos.y < levelData.col;
     }
+
+    //public LevelData GenerateRandomLevel(int row, int col, int maxLinksPerCell)
+    //{
+    //    LevelData level = new LevelData();
+    //    level.row = row;
+    //    level.col = col;
+    //    level.data = new List<int>();
+
+    //    int[,] linkCounts = new int[row, col];
+    //    bool[,] visited = new bool[row, col];
+
+    //    // Possible directions
+    //    List<Vector2Int> directions = new List<Vector2Int>() {
+    //    Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left
+    //};
+
+    //    System.Random rand = new System.Random();
+
+    //    // Randomly connect neighboring cells
+    //    for (int i = 0; i < row; i++)
+    //    {
+    //        for (int j = 0; j < col; j++)
+    //        {
+    //            foreach (var dir in directions)
+    //            {
+    //                int ni = i + dir.x;
+    //                int nj = j + dir.y;
+
+    //                if (ni >= 0 && nj >= 0 && ni < row && nj < col)
+    //                {
+    //                    if (rand.NextDouble() < 0.4) // 40% chance to link
+    //                    {
+    //                        if (linkCounts[i, j] < maxLinksPerCell && linkCounts[ni, nj] < maxLinksPerCell)
+    //                        {
+    //                            linkCounts[i, j]++;
+    //                            linkCounts[ni, nj]++;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    // Flatten to list
+    //    for (int i = 0; i < row; i++)
+    //    {
+    //        for (int j = 0; j < col; j++)
+    //        {
+    //            level.data.Add(linkCounts[i, j]);
+    //        }
+    //    }
+
+    //    return level;
+    //}
+
+
+
+    private List<(Vector2Int, Vector2Int)> GenerateSpanningTree(int row, int col, System.Random rand)
+    {
+        bool[,] visited = new bool[row, col];
+        var directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+        var edges = new List<(Vector2Int, Vector2Int)>();
+        var stack = new Stack<Vector2Int>();
+        Vector2Int start = new Vector2Int(rand.Next(row), rand.Next(col));
+        visited[start.x, start.y] = true;
+        stack.Push(start);
+
+        while (stack.Count > 0)
+        {
+            var cur = stack.Pop();
+           
+            var dirs = directions.OrderBy(_ => rand.Next()).ToArray();
+            foreach (var d in dirs)
+            {
+                var nxt = cur + d;
+                if (nxt.x >= 0 && nxt.y >= 0 && nxt.x < row && nxt.y < col && !visited[nxt.x, nxt.y])
+                {
+                    visited[nxt.x, nxt.y] = true;
+                    edges.Add((cur, nxt));
+                    stack.Push(nxt);
+                }
+            }
+        }
+
+        return edges;
+    }
+
+    private List<(Vector2Int, Vector2Int)> AddExtraEdges(
+    List<(Vector2Int, Vector2Int)> treeEdges, int row, int col, int extraCount, System.Random rand)
+    {
+        var allPossible = new HashSet<string>();
+        foreach (var e in treeEdges)
+        {
+            string key = $"{e.Item1.x},{e.Item1.y}-{e.Item2.x},{e.Item2.y}";
+            allPossible.Add(key);
+            allPossible.Add($"{e.Item2.x},{e.Item2.y}-{e.Item1.x},{e.Item1.y}");
+        }
+
+        var directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+        int attempts = 0;
+        while (extraCount > 0 && attempts < row * col * 10)
+        {
+            attempts++;
+            int x = rand.Next(row), y = rand.Next(col);
+            var dir = directions[rand.Next(4)];
+            var nx = x + dir.x;
+            var ny = y + dir.y;
+            if (nx < 0 || ny < 0 || nx >= row || ny >= col) continue;
+            string key = $"{x},{y}-{nx},{ny}";
+            if (allPossible.Contains(key)) continue;
+            allPossible.Add(key);
+            allPossible.Add($"{nx},{ny}-{x},{y}");
+            treeEdges.Add((new Vector2Int(x, y), new Vector2Int(nx, ny)));
+            extraCount--;
+        }
+
+        return treeEdges;
+    }
+
+    private void GenerateLevel(int row, int col, int extraEdges)
+    {
+        var rand = new System.Random();
+
+        var edges = GenerateSpanningTree(row, col, rand);
+
+        edges = AddExtraEdges(edges, row, col, extraEdges, rand);
+
+
+        int[,] connectionGrid = new int[row, col];
+        foreach (var (a, b) in edges)
+        {
+            connectionGrid[a.x, a.y]++;
+            connectionGrid[b.x, b.y]++;
+        }
+
+
+        levelData.row = row;
+        levelData.col = col;
+        levelData.data = new List<int>(row * col);
+        for (int i = 0; i < row; i++)
+            for (int j = 0; j < col; j++)
+                levelData.data.Add(connectionGrid[i, j]);
+    }
+
 
 }
 

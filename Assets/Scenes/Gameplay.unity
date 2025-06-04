@@ -465,9 +465,9 @@ MonoBehaviour:
   highlightSprite: {fileID: 681614559}
   highlightSize: {x: 1.5, y: 1.5}
   levelData:
-    row: 1
-    col: 4
-    data: 01000000020000000200000001000000
+    row: 0
+    col: 0
+    data: 
   cellGap: 2
   cellSize: 2
   levelGap: 2
