@@ -205,8 +205,9 @@ public class GameManager : MonoBehaviour
                         if (adjacentCell != null)
                         {
                             int adjacentDirection = (i + 2) % 4;
+                            startCell.RemoveEdge(i);
                             adjacentCell.RemoveEdge(adjacentDirection);
-                            adjacentCell.RemoveEdge(adjacentDirection);
+                            //adjacentCell.RemoveEdge(adjacentDirection);
 
                         }
                     }
