@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Cell : MonoBehaviour
 {
@@ -102,7 +103,14 @@ public class Cell : MonoBehaviour
     {
         for(int i = 0; i < 4; i++)
         {
-            connectedCell[i] = GameManager.instance.GetAdjacentCell(Row, Column, i);
+            if(SceneManager.GetActiveScene().buildIndex==1)
+            {
+                connectedCell[i] = GameManagerLevel1.instance.GetAdjacentCell(Row, Column, i);
+            }
+            else
+            {
+
+            }
             if (connectedCell[i]==null) continue;
 
             var singleEdge = edge[i][1].GetComponentInChildren<SpriteRenderer>();
@@ -113,7 +121,15 @@ public class Cell : MonoBehaviour
                 );
 
             float edgeSize = Mathf.Abs(edgeOffset.x) > Mathf.Abs(edgeOffset.y) ? Mathf.Abs(edgeOffset.x) : Mathf.Abs(edgeOffset.y);
-            edgeSize *= GameManager.instance.EdgeSize;
+            if (SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                edgeSize *= GameManagerLevel1.instance.EdgeSize;
+            }
+            else
+            {
+                edgeSize *= GameManager.instance.EdgeSize;
+            }
+               
             ChangeSpriteSize(singleEdge, edgeSize);
             foreach(var item in doubleEdge)
             {
